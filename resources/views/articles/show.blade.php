@@ -2,23 +2,18 @@
 
 @section('content')
     <div class="card mb-3">
-        <img class="card-img-top" style="height: 300px" src="{{ asset('images/' . $article->image) }}" alt="Card image cap">
+        <img class="card-img-top" style="height: 300px" src="{{ asset('images/' . $article->image) }}"
+             alt="Card image cap">
         <div class="card-body">
             <h5 class="card-title"> {{  $article->title }}</h5>
             <p class="card-text"> {{  $article->description }}</p>
 
-{{--                        //like form--}}
-
-                <button type="button" class="btn btn-light like"
-                        id="{{ $article->id }}"
-                        onClick="likeArticle(this.id)"
-                        data-action="{{ route('like_article', $article) }}"
-                >Like &#10084;
-                </button>
-                <button class="btn btn-light">{{ $article->like_count }}</button>
+            {{-- like section--}}
+            <button type="button" class="btn btn-light like" id="{{ $article->id }}" onClick="likeArticle(this.id)" data-action="{{ route('like_article', $article) }}">Like &#10084;</button>
+            <button class="btn btn-light like-count">{{ $article->like_count }}</button>
 
 
-            {{--            //comment form--}}
+            {{-- comment form--}}
             <form method="post" action="{{ route('add-comment') }}">
                 @csrf
                 <div class="form-group">
@@ -32,7 +27,8 @@
                 </div>
 
                 <div class="form-group">
-                    <input type="number" class="form-control" id="{{ $article->id }}" hidden name="article_id" value="{{ $article->id }}">
+                    <input type="number" class="form-control" id="{{ $article->id }}" hidden name="article_id"
+                           value="{{ $article->id }}">
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
@@ -53,16 +49,5 @@
 @endsection
 
 @section('script')
-        <script>
-            function likeArticle(article_id){
-                $.ajax({
-                    type: "POST",
-                    url: document.getElementById(article_id).getAttribute('data-action'),
-                    data: article_id,
-                    success: function () {
-                        alert('Success')
-                    }
-                });
-            };
-        </script>
+
 @endsection

@@ -9,56 +9,49 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js" integrity="sha512-WNLxfP/8cVYL9sj8Jnp6et0BkubLP31jhTG9vhL/F5uEZmg5wEzKoXp1kJslzPQWwPT1eyMiSxlKCgzHLOTOTQ==" crossorigin="anonymous"></script>
-
 </head>
 <body class="antialiased">
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-                        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                    <div class="navbar-nav">
-                        <a class="nav-item nav-link active" href="/">Home <span class="sr-only">(current)</span></a>
-                        <a class="nav-item nav-link" href="{{ route('articles') }}">Articles</a>
-                        <a class="nav-item nav-link" href="#">
-                                @if (Route::has('login'))
-                                        @auth
-                                            <a href="{{ url('/home') }}" class="nav-item nav-link">Home</a>
-                                        @else
-                                            <a href="{{ route('login') }}" class="nav-item nav-link">Login</a>
-
-                                            @if (Route::has('register'))
-                                                <a href="{{ route('register') }}"
-                                                   class="nav-item nav-link">Register</a>
-                                            @endif
-                                        @endauth
-                                @endif
-                        </a>
-
-                    </div>
-                </div>
-            </nav>
+<div id="app">
+    @include('layouts.navbar')
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="container pt-4">
+                @yield('content')
+            </div>
         </div>
     </div>
-    @yield('content')
-    @yield('script')
 </div>
 
-
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
         crossorigin="anonymous"></script>
+{{--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"--}}
+{{--        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"--}}
+{{--        crossorigin="anonymous"></script>--}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+
+<script>
+    function likeArticle(article_id) {
+        $.ajax({
+            type: "POST",
+            url: document.getElementById(article_id).getAttribute('data-action'),
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "article_id" : article_id
+            },
+            success: function (response) {
+                $('.like-count').text(response.new_count);
+            }
+        });
+    };
+</script>
+
+
+@yield('script')
+
 </body>
 </html>

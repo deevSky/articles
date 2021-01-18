@@ -56,10 +56,16 @@ class ArticleController extends Controller
 
     public function like(Article $article)
     {
+
+        $like_count = $article->like_count;
         $article->update([
             'like_count' => $article->like_count + 1
         ]);
-        return view('articles.show', ['article' => $article]);
+
+        return response()->json([
+            'success' => 'aaaaaaaaaaaa',
+            'new_count' => $article->like_count,
+            ]);
     }
 
     /**

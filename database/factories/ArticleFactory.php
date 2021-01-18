@@ -21,10 +21,14 @@ class ArticleFactory extends Factory
      */
     public function definition()
     {
+        $slug = $this->faker->unique()->slug;
+        $title = implode(' ',explode('-', $slug));
+
         return [
-            'title' => $this->faker->word,
+            'title' => $title,
+            'slug' => $slug,
             'description' => $this->faker->sentence,
-            'image' => $this->faker->image('public/images',640,480, null, false),
+            'image' => $this->faker->image('public/images', 640, 480, null, false),
         ];
     }
 }
