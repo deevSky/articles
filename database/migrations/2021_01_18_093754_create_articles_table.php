@@ -18,7 +18,9 @@ class CreateArticlesTable extends Migration
             $table->string('title')->unique();
             $table->string('slug')->unique()->index();
             $table->string('description');
+            $table->string('full_description');
             $table->string('image');
+            $table->string('small_image');
             $table->integer('like_count')->default(0);
             $table->integer('view_count')->default(0);
             $table->timestamps();

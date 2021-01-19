@@ -24,9 +24,11 @@ class ArticleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function latestArticles()
     {
-        //
+        $articles = Article::orderBy('id', 'DESC')->paginate(6);
+
+        return view('welcome', ['articles' => $articles]);
     }
 
     /**
@@ -48,22 +50,20 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        $article->update([
-            'view_count' => $article->view_count + 1
+        return view('articles.show', [
+            'article' => $article,
+            'tags' => $article->tags()
         ]);
-        return view('articles.show', ['article' => $article]);
     }
 
     public function like(Article $article)
     {
-
-        $like_count = $article->like_count;
         $article->update([
             'like_count' => $article->like_count + 1
         ]);
 
         return response()->json([
-            'success' => 'aaaaaaaaaaaa',
+            'success' => 'success',
             'new_count' => $article->like_count,
             ]);
     }
@@ -72,11 +72,20 @@ class ArticleController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Article  $article
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function edit(Article $article)
+    public function pageView(Request $request)
     {
-        //
+        $article = Article::where('id', $request->article_id)->get()[0];
+        $article->update([
+            'view_count' => $article->view_count + 1
+        ]);
+
+        return response()->json([
+            'success' => 'Success',
+            'new_count' => $article->view_count,
+        ]);
     }
 
     /**

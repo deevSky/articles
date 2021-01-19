@@ -23,12 +23,15 @@ class ArticleFactory extends Factory
     {
         $slug = $this->faker->unique()->slug;
         $title = implode(' ',explode('-', $slug));
+        $image = $this->faker->image('public/images', 640, 480, null, false);
 
         return [
             'title' => $title,
             'slug' => $slug,
             'description' => $this->faker->sentence,
-            'image' => $this->faker->image('public/images', 640, 480, null, false),
+            'full_description' => $this->faker->text,
+            'image' => $image,
+            'small_image' => $image,
         ];
     }
 }

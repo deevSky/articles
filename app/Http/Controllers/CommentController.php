@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CommentRequest;
+use App\Models\Article;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 
@@ -33,16 +35,26 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CommentRequest $request)
     {
+        $comments = Comment::where('id', explode('-', $request->article_id)[1]);
 
         $comment = new Comment();
         $comment->topic = $request->topic;
         $comment->body = $request->body;
-        $comment->article_id = $request->article_id;
+        $comment->article_id = explode('-', $request->article_id)[1];
         $comment->save();
 
-        return redirect()->route('article', $comment->article_id);
+//        $slug = Article::where('id', $comment->article_id)->get()[0]->slug;
+        return response()->json([
+            'success'=>'Form is successfully submitted!',
+            'topic' => $comment->topic,
+            'body' => $comment->body,
+            'article_id' => $comment->article_id,
+            'comment_id' => $comment->id,
+             $comments
+            ]);
+//        return redirect()->route('show-article', $slug)->with('success','Comment added successfully!');
     }
 
     /**

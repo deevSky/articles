@@ -5,19 +5,20 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <a class="nav-item nav-link active" href="/">Home <span class="sr-only">(current)</span></a>
-            <a class="nav-item nav-link" href="{{ route('articles') }}">Articles</a>
+            <a class="nav-item nav-link navbar-brand {{ Request::is('/') ? 'active' : '' }}" href="/">Brand <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link {{ Request::is('articles') ? 'active' : '' }}" href="{{ route('articles') }}">Articles</a>
         </div>
     </div>
     <div class="navbar-nav float-right">
         @if (Route::has('login'))
             @auth
-                <a href="{{ url('/home') }}" class="nav-item nav-link">Home</a>
+                <a href="{{ url('/home') }}" class="nav-item nav-link {{ Request::is('home') ? 'active' : '' }}">Home</a>
+                <a href="{{ url('/logout') }}" class="nav-item nav-link"> Logout </a>
             @else
-                <a href="{{ route('login') }}" class="nav-item nav-link">Login</a>
+                <a href="{{ route('login') }}" class="nav-item nav-link {{ Request::is('login') ? 'active' : '' }}">Login</a>
 
                 @if (Route::has('register'))
-                    <a href="{{ route('register') }}" class="nav-item nav-link">Register</a>
+                    <a href="{{ route('register') }}" class="nav-item nav-link {{ Request::is('register') ? 'active' : '' }}">Register</a>
                 @endif
             @endauth
         @endif

@@ -13,6 +13,8 @@
 <body class="antialiased">
 <div id="app">
     @include('layouts.navbar')
+    @include('flash-message')
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="container pt-4">
@@ -41,13 +43,39 @@
             url: document.getElementById(article_id).getAttribute('data-action'),
             data: {
                 "_token": "{{ csrf_token() }}",
-                "article_id" : article_id
+                "article_id": article_id
             },
             success: function (response) {
                 $('.like-count').text(response.new_count);
             }
         });
     };
+
+    function commentArticle(article_id, comment_id) {
+        let body = $('#body').val();
+        let topic = $('#topic').val();
+
+        $.ajax({
+            type: "POST",
+            url: document.getElementById(article_id).getAttribute('data-action'),
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "article_id": article_id,
+                'topic': topic,
+                'body': body
+            },
+            success: function (response) {
+                $('.comment-list').prepend("<div class='alert alert-dark alert-dismissible fade show' role='alert'> " +
+                    "<strong>" + response.topic + ' ' + "</strong>" + response.body +
+                    "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+                    "<span aria-hidden='true'>&times;</span>" +
+                    "</button> </div>");
+                $('#body').val('');
+                $('#topic').val('');
+            }
+        });
+    };
+
 </script>
 
 

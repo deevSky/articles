@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -15,23 +17,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::get('/test', function () {
-//    $title = 'qqqq rrrr tttt oooo';
-//   $aaa =  implode('-',explode(' ', $title));
-//   dd($aaa);
-//});
 
-Route::get('/', function () {
-    return view('layouts.app');
-});
-
-Route::get('/articles', 'App\Http\Controllers\ArticleController@index')->name('articles');
+Route::get('/', [ArticleController::class, 'latestArticles'])->name('latest-articles');
+Route::get('/articles', [ArticleController::class,'index'])->name('articles');
 Route::get('/articles/{article:slug}', [ArticleController::class, 'show'])->name('show-article');
-Route::post('/articles/{article:slug}/like', 'App\Http\Controllers\ArticleController@like')->name('like_article');
-
-Route::post('/comments/store', 'App\Http\Controllers\CommentController@store')->name('add-comment');
+Route::post('/articles/{article:slug}/like', [ArticleController::class,'like'])->name('like_article');
+Route::post('/articles/page-view', [ArticleController::class,'pageView'])->name('page-view');
+Route::post('/comments/store', [CommentController::class,'store'])->name('add-comment');
 
 
 Auth::routes();
 
-Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home');
+Route::get('/home', [HomeController::class,'index'])->name('home');
+Route::get('/logout', function (){
+    auth()->logout();
+    return redirect('/');
+});
