@@ -45,7 +45,7 @@ class CommentController extends Controller
         $comment->save();
 
         return response()->json([
-            'success'=>'Form is successfully submitted!',
+            'message'=>'Form is successfully submitted!',
             'topic' => $comment->topic,
             'body' => $comment->body,
             'article_id' => $comment->article_id,

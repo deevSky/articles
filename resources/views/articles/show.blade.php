@@ -8,7 +8,7 @@
             <h5 class="card-title"> {{  ucfirst($article->title) }}</h5>
             <p class="card-text"> {{  ucfirst($article->description) }}</p>
             <p class="card-text"> {{  $article->full_description }}</p>
-
+            <hr>
             {{-- Like section--}}
             <button type="button" class="btn btn-light like" id="{{ $article->id }}" onClick="likeArticle(this.id)"
                     data-action="{{ route('like_article', $article) }}">Like &#10084;
@@ -31,33 +31,30 @@
                     <label for="exampleInputEmail1">Add comment</label>
                     <input type="text" class="form-control" id="topic" name="topic"
                            value="{{old('topic')}}" placeholder="Comment is about">
-                    @error('topic')
-                    <div class="alert alert-danger">{{ $message }}</div>
-                    @enderror
+                    <p class="topic-alert" style="color: red"></p>
                 </div>
 
                 <div class="form-group">
                     <textarea class="form-control" id="body" rows="3" name="body" placeholder="Type here"></textarea>
-                    @error('body')
-                    <div class="alert alert-danger">{{ $message }}</div>
-                    @enderror
+                    <p class="body-alert" style="color: red"></p>
                 </div>
 
                 <div class="form-group">
                     <input type="number" class="form-control" id="{{ $article->id }}" hidden name="article_id"
                            value="{{ $article->id }}">
                 </div>
+
                 <button type="button" id="{{'comment-' . $article->id }}" onClick="commentArticle(this.id)"
                         data-action="{{ route('add-comment', $article) }}" class="btn btn-primary">Submit
                 </button>
             </form>
 
-            @if($article->comments)
+            @if($comments)
                 <div class="list-group mt-3 comment-list">
-                    @foreach($article->comments as $comment)
+                    @foreach($comments as $comment)
                         <div id="{{'comment_' . $comment->id }}" class="alert alert-dark alert-dismissible fade show"
                              role="alert">
-                            <strong>{{ $comment->topic }}</strong> {{ $comment->body }}
+                            <strong>{{ ucfirst($comment->topic) . ' | ' }}</strong> {{ $comment->body }}
                         </div>
                     @endforeach
                 </div>
@@ -92,6 +89,15 @@
             let body = $('#body').val();
             let topic = $('#topic').val();
 
+            if(!topic){
+                $('.topic-alert').text('Topic is required')
+                $('.body-alert').text('Body is required')
+            }
+
+            if(!body){
+                $('.body-alert').text('Body is required')
+            }
+
             $.ajax({
                 type: "POST",
                 url: document.getElementById(article_id).getAttribute('data-action'),
@@ -103,9 +109,11 @@
                 },
                 success: function (response) {
                     $('.comment-list').prepend("<div class='alert alert-dark alert-dismissible fade show' role='alert'> " +
-                        "<strong>" + response.topic + ' ' + "</strong>" + response.body + "</div>");
+                        "<strong>" + response.topic + '  |  ' + "</strong>" + response.body + "</div>");
                     $('#body').val('');
                     $('#topic').val('');
+                    $('.topic-alert').text('')
+                    $('.body-alert').text('')
                 }
             });
         };
