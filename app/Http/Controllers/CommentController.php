@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentRequest;
-use App\Models\Article;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 
@@ -45,7 +44,6 @@ class CommentController extends Controller
         $comment->article_id = explode('-', $request->article_id)[1];
         $comment->save();
 
-//        $slug = Article::where('id', $comment->article_id)->get()[0]->slug;
         return response()->json([
             'success'=>'Form is successfully submitted!',
             'topic' => $comment->topic,
@@ -54,7 +52,6 @@ class CommentController extends Controller
             'comment_id' => $comment->id,
              $comments
             ]);
-//        return redirect()->route('show-article', $slug)->with('success','Comment added successfully!');
     }
 
     /**

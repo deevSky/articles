@@ -9,7 +9,7 @@
             <p class="card-text"> {{  ucfirst($article->description) }}</p>
             <p class="card-text"> {{  $article->full_description }}</p>
 
-            {{-- like section--}}
+            {{-- Like section--}}
             <button type="button" class="btn btn-light like" id="{{ $article->id }}" onClick="likeArticle(this.id)"
                     data-action="{{ route('like_article', $article) }}">Like &#10084;
             </button>
@@ -24,7 +24,7 @@
                 </ul>
             @endif
 
-            {{-- comment form--}}
+            {{-- Comment form--}}
             <form method="post" action="{{ route('add-comment') }}" class="mt-3">
                 @csrf
                 <div class="form-group">
@@ -48,19 +48,17 @@
                            value="{{ $article->id }}">
                 </div>
                 <button type="button" id="{{'comment-' . $article->id }}" onClick="commentArticle(this.id)"
-                        data-action="{{ route('add-comment', $article) }}" class="btn btn-primary">Submit</button>
+                        data-action="{{ route('add-comment', $article) }}" class="btn btn-primary">Submit
+                </button>
             </form>
 
             @if($article->comments)
                 <div class="list-group mt-3 comment-list">
                     @foreach($article->comments as $comment)
-                        <div id="{{'comment_' . $comment->id }}" class="alert alert-dark alert-dismissible fade show" role="alert">
+                        <div id="{{'comment_' . $comment->id }}" class="alert alert-dark alert-dismissible fade show"
+                             role="alert">
                             <strong>{{ $comment->topic }}</strong> {{ $comment->body }}
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
                         </div>
-{{--                        <li class="">{{ $comment->body }}</li>--}}
                     @endforeach
                 </div>
             @endif
@@ -89,5 +87,27 @@
                 }
             });
         }, 3000);
+
+        function commentArticle(article_id) {
+            let body = $('#body').val();
+            let topic = $('#topic').val();
+
+            $.ajax({
+                type: "POST",
+                url: document.getElementById(article_id).getAttribute('data-action'),
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "article_id": article_id,
+                    'topic': topic,
+                    'body': body
+                },
+                success: function (response) {
+                    $('.comment-list').prepend("<div class='alert alert-dark alert-dismissible fade show' role='alert'> " +
+                        "<strong>" + response.topic + ' ' + "</strong>" + response.body + "</div>");
+                    $('#body').val('');
+                    $('#topic').val('');
+                }
+            });
+        };
     </script>
 @endsection
