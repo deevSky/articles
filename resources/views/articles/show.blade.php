@@ -1,11 +1,27 @@
 @extends('layouts.app')
 
 @section('content')
+    <h4 class="card-title"> {{  ucfirst($article->title) }}</h4>
+    <span class="card-text">
+        <small class="text-muted views">Created:</small>
+        <small class="text-muted views">{{' ' . $article->created_at }}</small>
+    </span>
+
+    {{--Tag section--}}
+    @if($article->tags)
+        <span class="card-text float-right">
+            <strong>Tags</strong>
+           @foreach($article->tags as $tag)
+                <small class="text-muted views">{{' | ' . $tag->name }}</small>
+            @endforeach
+        </span>
+    @endif
+
+
     <div class="card mb-3">
         <img class="card-img-top" src="{{ asset('images/' . $article->image) }}"
              alt="Card image cap">
         <div class="card-body">
-            <h5 class="card-title"> {{  ucfirst($article->title) }}</h5>
             <p class="card-text"> {{  ucfirst($article->description) }}</p>
             <p class="card-text"> {{  $article->full_description }}</p>
             <hr>
@@ -14,15 +30,6 @@
                     data-action="{{ route('like_article', $article) }}">Like &#10084;
             </button>
             <button class="btn btn-light like-count">{{ $article->like_count }}</button>
-
-            {{--Tag section--}}
-            @if($tags)
-                <ul>
-                    @foreach($tags as $tag)
-                        <li>{{ $tag->name }}</li>
-                    @endforeach
-                </ul>
-            @endif
 
             {{-- Comment form--}}
             <form method="post" action="{{ route('add-comment') }}" class="mt-3">
@@ -44,7 +51,7 @@
                            value="{{ $article->id }}">
                 </div>
 
-                <button type="button" id="{{'comment-' . $article->id }}" onClick="commentArticle(this.id)"
+                <button type="button" data-id="{{  $article->id }}" id="{{'comment-' . $article->id }}" onClick="commentArticle(this.id)"
                         data-action="{{ route('add-comment', $article) }}" class="btn btn-primary">Submit
                 </button>
             </form>
@@ -86,12 +93,11 @@
         }, 3000);
 
         function commentArticle(article_id) {
-            let body = $('#body').val();
-            let topic = $('#topic').val();
+            var body = $('#body').val();
+            var topic = $('#topic').val();
 
             if(!topic){
                 $('.topic-alert').text('Topic is required')
-                $('.body-alert').text('Body is required')
             }
 
             if(!body){
@@ -103,7 +109,7 @@
                 url: document.getElementById(article_id).getAttribute('data-action'),
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    "article_id": article_id,
+                    "article_id": document.getElementById(article_id).getAttribute('data-id'),
                     'topic': topic,
                     'body': body
                 },
@@ -112,8 +118,8 @@
                         "<strong>" + response.topic + '  |  ' + "</strong>" + response.body + "</div>");
                     $('#body').val('');
                     $('#topic').val('');
-                    $('.topic-alert').text('')
-                    $('.body-alert').text('')
+                    $('.topic-alert').text('');
+                    $('.body-alert').text('');
                 }
             });
         };

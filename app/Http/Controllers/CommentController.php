@@ -36,12 +36,12 @@ class CommentController extends Controller
      */
     public function store(CommentRequest $request)
     {
-        $comments = Comment::where('id', explode('-', $request->article_id)[1]);
+        $comments = Comment::where('id', $request->article_id);
 
         $comment = new Comment();
         $comment->topic = $request->topic;
         $comment->body = $request->body;
-        $comment->article_id = explode('-', $request->article_id)[1];
+        $comment->article_id = $request->article_id;
         $comment->save();
 
         return response()->json([

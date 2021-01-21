@@ -47,6 +47,7 @@
             },
             success: function (response) {
                 $('.like-count').text(response.new_count);
+                document.getElementById(article_id).setAttribute('disabled', 'true');
             }
         });
     };
